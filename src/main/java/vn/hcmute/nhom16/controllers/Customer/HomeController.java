@@ -4,8 +4,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vn.hcmute.nhom16.entities.Customer;
-import vn.hcmute.nhom16.service.CustomerService;
+import vn.hcmute.nhom16.entities.User;
+import vn.hcmute.nhom16.service.UserService;
 
 /**
  * Create by: IntelliJ IDEA
@@ -15,21 +15,21 @@ import vn.hcmute.nhom16.service.CustomerService;
  * Filename : Customer
  */
 @RestController
-@RequestMapping("api/vi/customer")
+@RequestMapping("api/v1/customer")
 public class HomeController {
-    private final CustomerService customerService;
+    private final UserService userService;
 
-    public HomeController(CustomerService customerService) {
-        this.customerService = customerService;
+    public HomeController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("{id}")
-    public Customer getCustomerById(@PathVariable String id){
-        return customerService.getCustomerById(id);
+    public User getCustomerById(@PathVariable String id){
+        return userService.getCustomerById(id);
     }
 
     @GetMapping("/email")
-    public Customer getCustomerByEmail(String email){
-        return customerService.getCustomerByEmail(email);
+    public User getCustomerByEmail(String email){
+        return userService.getCustomerByEmail(email);
     }
 }

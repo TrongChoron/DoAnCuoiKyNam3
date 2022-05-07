@@ -1,0 +1,16 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/test1
+
+
+default:
+  password: 123456
+
+paging:
+  default:
+    page: 0
+    size: 20
+
+google:
+  verifyUrl: https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=

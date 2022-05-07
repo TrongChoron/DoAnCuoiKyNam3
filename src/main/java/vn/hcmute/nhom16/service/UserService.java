@@ -18,7 +18,7 @@ public interface UserService {
 Page<User> getUserPaging(String search, int page, int size, String sort, String collumn);
 User getUser(Principal principal);
 User getUserByEmail(String email);
-User addNewUser(String name, String email, String password);
+User addNewUser(UserDto userDto);
 User createAdmin(UserDto dto);
 User updateUser(String id, UserDto userDto);
 List<String> getRoles();

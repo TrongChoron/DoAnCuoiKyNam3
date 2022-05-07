@@ -64,11 +64,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User addNewUser(String name, String email, String password) {
+    public User addNewUser(UserDto userDto) {
         User user = new User();
-        user.setName(name);
-        user.setEmail(email);
-        user.setPassword(password);
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
         user.setRoles(Collections.singletonList(EnumRole.ROLE_CUSTOMER.name()));
         userRepo.save(user);
         return user;

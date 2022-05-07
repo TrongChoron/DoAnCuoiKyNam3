@@ -1,9 +1,7 @@
 package vn.hcmute.nhom16.controllers.Customer;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import vn.hcmute.nhom16.dtos.UserDto;
 import vn.hcmute.nhom16.entities.User;
 import vn.hcmute.nhom16.service.UserService;
 
@@ -25,11 +23,16 @@ public class HomeController {
 
     @GetMapping("{id}")
     public User getCustomerById(@PathVariable String id){
-        return userService.getCustomerById(id);
+        return userService.getUserByEmail(id);
     }
 
     @GetMapping("/email")
     public User getCustomerByEmail(String email){
-        return userService.getCustomerByEmail(email);
+        return userService.getUserByEmail(email);
+    }
+
+    @PostMapping
+    public User insertUser(@RequestBody UserDto userDto){
+        return userService.addNewUser(userDto);
     }
 }

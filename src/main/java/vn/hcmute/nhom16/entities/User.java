@@ -29,7 +29,6 @@ public class User {
     private String email;
     private String password;
     private String avatar;
-    private String address;
+    private Address address;
     private List<String> roles = new ArrayList<>();
-
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.sql.Timestamp;
@@ -22,6 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @Document(collection = "orderDetail")
 public class OrderDetail {
+    @Id
     private String id;
     private double total;
     private Timestamp createAt;

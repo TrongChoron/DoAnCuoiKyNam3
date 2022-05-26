@@ -1,9 +1,14 @@
 package vn.hcmute.nhom16.controllers.Customer;
 
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.hcmute.nhom16.dtos.UserDto;
 import vn.hcmute.nhom16.entities.User;
-import vn.hcmute.nhom16.service.UserService;
+import vn.hcmute.nhom16.service.IUserService;
+
+import java.util.List;
 
 /**
  * Create by: IntelliJ IDEA
@@ -13,26 +18,49 @@ import vn.hcmute.nhom16.service.UserService;
  * Filename : Customer
  */
 @RestController
-@RequestMapping("api/v1/customer")
+@RequestMapping("api/v1/user")
 public class HomeController {
-    private final UserService userService;
+    private final IUserService IUserService;
 
-    public HomeController(UserService userService) {
-        this.userService = userService;
+    @GetMapping("/paging")
+    public ResponseEntity<Page<User>> getNhanVienPaging(
+            @RequestParam(name = "search", required = false, defaultValue = "") String search,
+            @RequestParam(name = "page", required = false, defaultValue = "${paging.default.page}") int page,
+            @RequestParam(name = "size", required = false, defaultValue = "${paging.default.size}") int size,
+            @RequestParam(name = "sort", required = false, defaultValue = "asc") String sort,
+            @RequestParam(name = "column", required = false, defaultValue = "email") String column
+    ) {
+        return new ResponseEntity<>(IUserService.getUserPaging(search, page, size, sort, column), HttpStatus.OK);
+    }
+    public HomeController(IUserService IUserService) {
+        this.IUserService = IUserService;
     }
 
-    @GetMapping("{id}")
-    public User getCustomerById(@PathVariable String id){
-        return userService.getUserByEmail(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable String id){
+
+        return new ResponseEntity<>(IUserService.getUserById(id), HttpStatus.OK);
     }
 
     @GetMapping("/email")
-    public User getCustomerByEmail(String email){
-        return userService.getUserByEmail(email);
+    public ResponseEntity<User> getCustomerByEmail(@RequestBody String email){
+
+        return new ResponseEntity<>(IUserService.getUserByEmail(email),HttpStatus.OK);
     }
 
-    @PostMapping
-    public User insertUser(@RequestBody UserDto userDto){
-        return userService.addNewUser(userDto);
+    @GetMapping
+    public List<User> getAllUsers(){
+        return IUserService.getUsers();
     }
+
+    @PostMapping()
+    public ResponseEntity<User> insertUser(@RequestBody UserDto userDto){
+        return new ResponseEntity<>(IUserService.addNewUser(userDto),HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody UserDto userDto){
+        return new ResponseEntity<>(IUserService.updateUser(id, userDto),HttpStatus.OK);
+    }
+
 }

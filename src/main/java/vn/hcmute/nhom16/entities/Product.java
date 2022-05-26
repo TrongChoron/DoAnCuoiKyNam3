@@ -19,13 +19,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "product")
-public class Product {
+public class Product {                                                              
     @Id
     private String id;
     private String name;
     private String pic;
     private String description;
     private double price;
+    // Status = False -> Ngừng kinh doanh, = True -> Còn hàng
     private boolean status;
-    Type typeProduct;
+    TypeProduct typeProduct;
 }

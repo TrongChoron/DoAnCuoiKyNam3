@@ -1,8 +1,9 @@
-spring:
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/test1
-
+#spring:
+#  data:
+#    mongodb:
+#       uri: mongodb://localhost:27017/test1
+#
+#
 
 default:
   password: 123456

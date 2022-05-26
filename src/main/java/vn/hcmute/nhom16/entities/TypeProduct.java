@@ -19,7 +19,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "type")
-public class Type {
+public class TypeProduct {
     @Id
     private String id;
     private String name;

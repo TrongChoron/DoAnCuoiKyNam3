@@ -12,15 +12,11 @@ import vn.hcmute.nhom16.entities.User;
 import vn.hcmute.nhom16.exceptions.InvalidException;
 import vn.hcmute.nhom16.exceptions.NotFoundException;
 import vn.hcmute.nhom16.repositories.UserRepo;
-import vn.hcmute.nhom16.service.UserService;
+import vn.hcmute.nhom16.service.IUserService;
 import vn.hcmute.nhom16.utils.EnumRole;
 import vn.hcmute.nhom16.utils.PageUtils;
 
-import java.security.Principal;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -32,7 +28,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements IUserService {
 
     private final UserRepo userRepo;
     private final VietnameseStringUtils vietnameseStringUtils;
@@ -46,21 +42,26 @@ public class UserServiceImpl implements UserService {
     private String defaultPassword;
 
     @Override
-    public Page<User> getUserPaging(String search, int page, int size, String sort, String collumn) {
-        Pageable pageable = PageUtils.createPageable(page, size, sort, collumn);
+    public Page<User> getUserPaging(String search, int page, int size, String sort, String column) {
+        Pageable pageable = PageUtils.createPageable(page, size, sort, column);
         return userRepo.getUserPaging(vietnameseStringUtils.makeSearchRegex(search), pageable);
     }
 
     @Override
-    public User getUser(Principal principal) {
-        return userRepo.findByEmail(principal.getName())
-                .orElseThrow(() -> new NotFoundException(String.format("Tài khoản có Email %s không tồn tại", principal.getName())));
+    public List<User> getUsers() {
+        return userRepo.findAll();
+    }
+
+    @Override
+    public User getUserById(String id) {
+        return userRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Nhân viên có id %s không tồn tại", id)));
     }
 
     @Override
     public User getUserByEmail(String email) {
         return userRepo.getUserByEmail(email)
-                .orElse(null);
+                .orElseThrow(() -> new NotFoundException(String.format("Tài khoản có Email %s không tồn tại",email)));
     }
 
     @Override
@@ -115,4 +116,5 @@ public class UserServiceImpl implements UserService {
     public List<String> getRoles() {
         return Arrays.stream(EnumRole.values()).map(Enum::name).collect(Collectors.toList());
     }
+
 }

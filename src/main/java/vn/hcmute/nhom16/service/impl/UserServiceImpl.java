@@ -1,23 +1,25 @@
 package vn.hcmute.nhom16.service.impl;
 
 import com.stc.vietnamstringutils.VietnameseStringUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import vn.hcmute.nhom16.dtos.UserDto;
+import vn.hcmute.nhom16.entities.Role;
 import vn.hcmute.nhom16.entities.User;
-import vn.hcmute.nhom16.exceptions.InvalidException;
-import vn.hcmute.nhom16.exceptions.NotFoundException;
+import vn.hcmute.nhom16.repositories.RoleRepo;
+import vn.hcmute.nhom16.service.exceptions.InvalidException;
+import vn.hcmute.nhom16.service.exceptions.NotFoundException;
 import vn.hcmute.nhom16.repositories.UserRepo;
 import vn.hcmute.nhom16.service.IUserService;
-import vn.hcmute.nhom16.utils.EnumRole;
 import vn.hcmute.nhom16.utils.PageUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Create by: IntelliJ IDEA
@@ -28,15 +30,12 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements IUserService {
 
     private final UserRepo userRepo;
+    private final RoleRepo roleRepo;
     private final VietnameseStringUtils vietnameseStringUtils;
-
-    public UserServiceImpl(UserRepo userRepo, VietnameseStringUtils vietnameseStringUtils) {
-        this.userRepo = userRepo;
-        this.vietnameseStringUtils = vietnameseStringUtils;
-    }
 
     @Value("123456")
     private String defaultPassword;
@@ -53,25 +52,29 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User getUserById(String id) {
-        return userRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Nhân viên có id %s không tồn tại", id)));
-    }
-
-    @Override
     public User getUserByEmail(String email) {
         return userRepo.getUserByEmail(email)
-                .orElseThrow(() -> new NotFoundException(String.format("Tài khoản có Email %s không tồn tại",email)));
+                .orElseThrow(() -> new NotFoundException(String.format("Tài khoản có Email %s không tồn tại", email)));
     }
 
     @Override
     public User addNewUser(UserDto userDto) {
+        Boolean userExists = userRepo
+                .findByEmail(userDto.getEmail())
+                .isPresent();
+        if (userExists) {
+            throw new IllegalStateException("Email already taken");
+        }
+        String hash = BCrypt.hashpw(userDto.getPassword(), BCrypt.gensalt(12));
+        Role role = roleRepo.findByName("ROLE_CUSTOMER");
         User user = new User();
-        user.setName(userDto.getName());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
-        user.setRoles(Collections.singletonList(EnumRole.ROLE_CUSTOMER.name()));
+        user.setPassword(hash);
+        user.getRoles().add(role);
         userRepo.save(user);
+
         return user;
     }
 
@@ -91,30 +94,55 @@ public class UserServiceImpl implements IUserService {
         } else {
             user.setPassword(defaultPassword);
         }
-        user.setName(dto.getName());
-        user.setRoles(Arrays.asList(EnumRole.ROLE_ADMIN.name(), EnumRole.ROLE_CUSTOMER.name()));
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
         userRepo.save(user);
         return user;
+    }
+
+    @Override
+    public User getUserByEmailAndPassword(UserDto userDto) {
+        User user = userRepo.findByEmail(userDto.getEmail())
+                .orElseThrow(() ->
+                        new NotFoundException(String.format("User not found with email: {}", userDto.getEmail())));
+//        String hash = BCrypt.hashpw(userDto.getPassword(), BCrypt.gensalt(12));
+        if (BCrypt.checkpw(userDto.getPassword(), user.getPassword())) {
+            return user;
+        }else {
+            throw new NotFoundException(String.format("User not found with pass: {}", userDto.getPassword()));
+        }
+
+    }
+
+    @Override
+    public Role saveRole(Role role) {
+        return roleRepo.save(role);
+    }
+
+    @Override
+    public void addRoleToUser(String email, String roleName) {
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() ->
+                        new NotFoundException(String.format("User not found with email: {}", email)));
+        Role role = roleRepo.findByName(roleName);
+        user.getRoles().add(role);
+        userRepo.save(user);
     }
 
     @Override
     public User updateUser(String id, UserDto userDto) {
         User user = userRepo.findById(id)
-                .orElseThrow(()-> new NotFoundException(String.format("Tài khoản có id %s không tồn tại", id)));
-        user.setName(userDto.getName());
+                .orElseThrow(() -> new NotFoundException(String.format("Tài khoản có id %s không tồn tại", id)));
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
         user.setPassword(userDto.getPassword());
         if (!userDto.getEmail().toLowerCase().trim().equals(user.getEmail()) &&
                 getUserByEmail(userDto.getEmail().toLowerCase().trim()) == null) {
             user.setEmail(userDto.getEmail().toLowerCase().trim());
         }
-        user.setRoles(userDto.getRoles());
         userRepo.save(user);
         return user;
     }
 
-    @Override
-    public List<String> getRoles() {
-        return Arrays.stream(EnumRole.values()).map(Enum::name).collect(Collectors.toList());
-    }
 
 }

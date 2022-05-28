@@ -1,7 +1,7 @@
 package vn.hcmute.nhom16.repositories;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import vn.hcmute.nhom16.entities.OrderItem;
+import vn.hcmute.nhom16.entities.LineItem;
 
 /**
  * Create by: IntelliJ IDEA
@@ -10,5 +10,5 @@ import vn.hcmute.nhom16.entities.OrderItem;
  * Time     : 12:48
  * Filename : OrderItemRepo
  */
-public interface OrderItemRepo extends MongoRepository<OrderItem,String> {
+public interface OrderItemRepo extends MongoRepository<LineItem,String> {
 }

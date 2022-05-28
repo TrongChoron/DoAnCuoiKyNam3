@@ -10,16 +10,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 /**
  * Create by: IntelliJ IDEA
  * User     : trongnt
- * Date     : Sat, 5/7/2022
- * Time     : 11:05 PM
- * Filename : OrderItem
+ * Date     : Sat, 5/28/2022
+ * Time     : 13:31
+ * Filename : Role
  */
+@Document(collection = "role")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "orderItem")
-public class OrderItem {
+@NoArgsConstructor
+public class Role {
     @Id
     private String id;
     private String name;

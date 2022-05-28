@@ -8,5 +8,5 @@ package vn.hcmute.nhom16.utils;
  * Filename : EnumRole
  */
 public enum EnumRole {
-ROLE_CUSTOMER,ROLE_ADMIN
+    ROLE_CUSTOMER, ROLE_ADMIN;
 }

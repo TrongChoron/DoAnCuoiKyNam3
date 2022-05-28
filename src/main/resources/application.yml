@@ -5,6 +5,11 @@
 #
 #
 
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+
 default:
   password: 123456
 

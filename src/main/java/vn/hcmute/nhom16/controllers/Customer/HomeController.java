@@ -1,13 +1,18 @@
 package vn.hcmute.nhom16.controllers.Customer;
 
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import vn.hcmute.nhom16.dtos.UserDto;
+import vn.hcmute.nhom16.entities.Role;
 import vn.hcmute.nhom16.entities.User;
 import vn.hcmute.nhom16.service.IUserService;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -18,7 +23,8 @@ import java.util.List;
  * Filename : Customer
  */
 @RestController
-@RequestMapping("api/v1/user")
+@RequestMapping("api/v1")
+@RequiredArgsConstructor
 public class HomeController {
     private final IUserService IUserService;
 
@@ -32,35 +38,45 @@ public class HomeController {
     ) {
         return new ResponseEntity<>(IUserService.getUserPaging(search, page, size, sort, column), HttpStatus.OK);
     }
-    public HomeController(IUserService IUserService) {
-        this.IUserService = IUserService;
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable String id){
-
-        return new ResponseEntity<>(IUserService.getUserById(id), HttpStatus.OK);
-    }
 
     @GetMapping("/email")
-    public ResponseEntity<User> getCustomerByEmail(@RequestBody String email){
+    public ResponseEntity<User> getCustomerByEmail(@RequestBody String email) {
 
-        return new ResponseEntity<>(IUserService.getUserByEmail(email),HttpStatus.OK);
+        return new ResponseEntity<>(IUserService.getUserByEmail(email), HttpStatus.OK);
     }
 
-    @GetMapping
-    public List<User> getAllUsers(){
-        return IUserService.getUsers();
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok().body(IUserService.getUsers());
     }
 
-    @PostMapping()
-    public ResponseEntity<User> insertUser(@RequestBody UserDto userDto){
-        return new ResponseEntity<>(IUserService.addNewUser(userDto),HttpStatus.OK);
+    @PostMapping("/user/save")
+    public ResponseEntity<User> insertUser(@RequestBody UserDto userDto) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/user/save").toUriString());
+        return ResponseEntity.created(uri).body(IUserService.addNewUser(userDto));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody UserDto userDto){
-        return new ResponseEntity<>(IUserService.updateUser(id, userDto),HttpStatus.OK);
+    @GetMapping("/login")
+    public ResponseEntity<User> login(@RequestBody UserDto userDto){
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/login").toUriString());
+        return ResponseEntity.created(uri).body(IUserService.getUserByEmailAndPassword(userDto));
     }
 
+    @PostMapping("/role/addtouser")
+    public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form) {
+        IUserService.addRoleToUser(form.getUserEmail(), form.getRoleName());
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/user/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody UserDto userDto) {
+        return new ResponseEntity<>(IUserService.updateUser(id, userDto), HttpStatus.OK);
+    }
+
+}
+
+@Data
+class RoleToUserForm {
+    private String userEmail;
+    private String roleName;
 }

@@ -2,6 +2,7 @@ package vn.hcmute.nhom16.service;
 
 import org.springframework.data.domain.Page;
 import vn.hcmute.nhom16.dtos.UserDto;
+import vn.hcmute.nhom16.entities.Role;
 import vn.hcmute.nhom16.entities.User;
 
 import java.util.List;
@@ -18,15 +19,18 @@ public interface IUserService {
 
     List<User> getUsers();
 
-    User getUserById(String id);
-
     User getUserByEmail(String email);
 
     User addNewUser(UserDto userDto);
 
     User createAdmin(UserDto dto);
 
+    User getUserByEmailAndPassword(UserDto userDto);
+
+    Role saveRole(Role role);
+
+    void addRoleToUser(String email, String roleName);
+
     User updateUser(String id, UserDto userDto);
 
-    List<String> getRoles();
 }

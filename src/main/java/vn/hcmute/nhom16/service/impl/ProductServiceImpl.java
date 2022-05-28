@@ -1,12 +1,11 @@
 package vn.hcmute.nhom16.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import vn.hcmute.nhom16.dtos.ProductDto;
 import vn.hcmute.nhom16.entities.Product;
 import vn.hcmute.nhom16.entities.TypeProduct;
-import vn.hcmute.nhom16.exceptions.NotFoundException;
+import vn.hcmute.nhom16.service.exceptions.NotFoundException;
 import vn.hcmute.nhom16.repositories.ProductRepo;
 import vn.hcmute.nhom16.service.IProductService;
 

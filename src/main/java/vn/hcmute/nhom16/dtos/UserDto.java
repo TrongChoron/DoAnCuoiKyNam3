@@ -4,8 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vn.hcmute.nhom16.entities.Address;
+import vn.hcmute.nhom16.utils.EnumRole;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -20,10 +23,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-    private String name;
+    private String firstName;
+    private String lastName;
     private String email;
     private String password;
     private String avatar;
-    private String address;
-    private List<String> roles = new ArrayList<>();
+    private Address address;
+    private Collection<EnumRole> roles = new ArrayList<>();
+    private boolean locked;
+    private boolean enabled;
 }

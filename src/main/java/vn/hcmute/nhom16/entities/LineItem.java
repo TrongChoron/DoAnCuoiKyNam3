@@ -7,25 +7,22 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.sql.Timestamp;
-import java.util.List;
-
 /**
  * Create by: IntelliJ IDEA
  * User     : trongnt
- * Date     : Thu, 5/5/2022
- * Time     : 12:47 PM
- * Filename : Order
+ * Date     : Sat, 5/7/2022
+ * Time     : 11:05 PM
+ * Filename : OrderItem
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "orderDetail")
-public class OrderDetail {
+@Document(collection = "orderItem")
+public class LineItem {
     @Id
     private String id;
-    private double total;
-    private Timestamp createAt;
-    private List<LineItem> lineItemList;
+    private String name;
+    private Product product;
+    private User user;
 }

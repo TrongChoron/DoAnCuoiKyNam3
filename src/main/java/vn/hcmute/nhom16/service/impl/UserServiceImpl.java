@@ -108,7 +108,7 @@ public class UserServiceImpl implements IUserService {
 //        String hash = BCrypt.hashpw(userDto.getPassword(), BCrypt.gensalt(12));
         if (BCrypt.checkpw(userDto.getPassword(), user.getPassword())) {
             return user;
-        }else {
+        } else {
             throw new NotFoundException(String.format("User not found with pass: {}", userDto.getPassword()));
         }
 
@@ -125,7 +125,20 @@ public class UserServiceImpl implements IUserService {
                 .orElseThrow(() ->
                         new NotFoundException(String.format("User not found with email: {}", email)));
         Role role = roleRepo.findByName(roleName);
-        user.getRoles().add(role);
+        Integer count =0;
+        if (role != null) {
+            for (Role item : user.getRoles()) {
+                if (item.getName().equals(roleName)) {
+                    count +=1;
+                }
+            }
+            if(count > 0) {
+                throw new IllegalStateException(String.format("Role has been in this user"));
+            }else {
+                user.getRoles().add(role);
+            }
+        }
+
         userRepo.save(user);
     }
 

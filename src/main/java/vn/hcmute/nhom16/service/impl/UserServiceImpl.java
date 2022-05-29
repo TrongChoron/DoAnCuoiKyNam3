@@ -105,7 +105,6 @@ public class UserServiceImpl implements IUserService {
         User user = userRepo.findByEmail(userDto.getEmail())
                 .orElseThrow(() ->
                         new NotFoundException(String.format("User not found with email: {}", userDto.getEmail())));
-//        String hash = BCrypt.hashpw(userDto.getPassword(), BCrypt.gensalt(12));
         if (BCrypt.checkpw(userDto.getPassword(), user.getPassword())) {
             return user;
         } else {

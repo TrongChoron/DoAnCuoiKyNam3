@@ -56,7 +56,7 @@ public class HomeController {
         return ResponseEntity.created(uri).body(IUserService.addNewUser(userDto));
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<User> login(@RequestBody UserDto userDto){
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/login").toUriString());
         return ResponseEntity.created(uri).body(IUserService.getUserByEmailAndPassword(userDto));

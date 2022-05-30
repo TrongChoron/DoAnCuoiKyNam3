@@ -1,12 +1,14 @@
 package vn.hcmute.nhom16.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import vn.hcmute.nhom16.dtos.ProductDto;
 import vn.hcmute.nhom16.entities.Product;
 import vn.hcmute.nhom16.entities.TypeProduct;
-import vn.hcmute.nhom16.service.exceptions.NotFoundException;
+import vn.hcmute.nhom16.exceptions.NotFoundException;
 import vn.hcmute.nhom16.repositories.ProductRepo;
+import vn.hcmute.nhom16.repositories.TypeProductRepo;
 import vn.hcmute.nhom16.service.IProductService;
 
 import java.util.List;
@@ -20,13 +22,12 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements IProductService {
 
     private final ProductRepo productRepo;
+    private final TypeProductRepo typeProductRepo;
 
-    public ProductServiceImpl(ProductRepo productRepo) {
-        this.productRepo = productRepo;
-    }
 
 //    @Override
 //    public Page<Product> getProductPaging(String search, int page, int size, String sort, String column) {
@@ -51,11 +52,40 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public Product addNewProduct(ProductDto productDto) {
-        return null;
+        Boolean productExists = productRepo
+                .findByName(productDto.getName())
+                .isPresent();
+        if (productExists) {
+            throw new IllegalStateException("Product already taken");
+        }
+        TypeProduct typeProduct =
+                typeProductRepo.findByName(productDto.getTypeProduct().getName())
+                        .orElseThrow(() -> new NotFoundException(String.format("Type has been exist")));
+        Product product = new Product();
+        product.setName(productDto.getName());
+        product.setDescription(productDto.getDescription());
+        product.setPrice(productDto.getPrice());
+        product.setPic(productDto.getPic());
+        product.setStatus(productDto.isStatus());
+        product.setTypeProduct(typeProduct);
+        productRepo.save(product);
+        return product;
     }
 
     @Override
     public Product updateProduct(String id, ProductDto productDto) {
-        return null;
+        Product product = productRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Sản phẩm không tồn tại")));
+        TypeProduct typeProduct =
+                typeProductRepo.findByName(productDto.getTypeProduct().getName())
+                        .orElseThrow(() -> new NotFoundException(String.format("Type has been exist")));
+        product.setName(productDto.getName());
+        product.setDescription(productDto.getDescription());
+        product.setPrice(productDto.getPrice());
+        product.setPic(productDto.getPic());
+        product.setStatus(productDto.isStatus());
+        product.setTypeProduct(typeProduct);
+        productRepo.save(product);
+        return product;
     }
 }

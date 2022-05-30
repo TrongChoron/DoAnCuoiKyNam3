@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import vn.hcmute.nhom16.dtos.UserDto;
-import vn.hcmute.nhom16.entities.Role;
 import vn.hcmute.nhom16.entities.User;
 import vn.hcmute.nhom16.service.IUserService;
 
@@ -25,7 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1")
 @RequiredArgsConstructor
-public class HomeController {
+public class UserController {
     private final IUserService IUserService;
 
     @GetMapping("/paging")

@@ -9,6 +9,7 @@ import vn.hcmute.nhom16.entities.Product;
 import vn.hcmute.nhom16.entities.TypeProduct;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Create by: IntelliJ IDEA
@@ -21,6 +22,9 @@ public interface ProductRepo extends MongoRepository<Product,String> {
 
 //    @Query()
 //    Page<Product> getProductPaging(String search, Pageable pageable);
+
+
+    Optional<Product> findByName(String name);
 
     @Query(value = "{'productType': ?0}")
     List<Product> getProductByType(TypeProduct typeProduct);
